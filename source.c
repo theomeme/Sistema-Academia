@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define max 60
-#define length 3
+#define length 30
 
 struct student
 {
@@ -32,24 +32,25 @@ void printStudent(struct student v[])
 {
     for(int i=0;i<length;i++)
     {
-        printf("%s\n", v[i].name);
-        printf("%d\n", v[i].age);
-        printf("%.3f\n", v[i].weight);
-        printf("%.3f\n", v[i].height);
+        printf("Student [%d]\n\t",(i+1));
+        printf("%s\n\t", v[i].name);
+        printf("%d\n\t", v[i].age);
+        printf("%.3f\n\t", v[i].weight);
+        printf("%.3f\n\t", v[i].height);
     }
 }
 
-float highHeight(struct student v[])
+void highHeight(struct student v[], int *highHeightPosition)
 {
-    float high = 0;
+    float aux = 0;
     for(int i=0;i<length;i++)
     {
-        if(v[i].height>high)
+        if(v[i].height>aux)
         {
-            high = v[i].height;
+            aux = v[i].height;
+            *highHeightPosition = i;
         }
     }
-    return high;
 }
 
 void calculateIMC(struct student v[], float imc[], float *avarege)
@@ -61,62 +62,76 @@ void calculateIMC(struct student v[], float imc[], float *avarege)
     }
 }
 
-float highMinIMC(float imc[], float *minIMC)
+void highMinIMC(float imc[], int *minIMCPosition, int *highImcPosition)
 {
-    float highIMC = 0;
-    *minIMC = imc[0];
+    float aux = 0;
+    float aux1 = imc[0];
     for(int i=0;i<length;i++)
     {
-        if(imc[i] > highIMC)
+        if(imc[i] > aux)
         {
-            highIMC = imc[i];
+            aux = imc[i];
+            *highImcPosition = i;
         }
-        if(imc[i] < *minIMC)
+        if(imc[i] < aux1)
         {
-            *minIMC = imc[i];
+            aux1 = imc[i];
+            *minIMCPosition = i;
         }
     }
-    return highIMC;
 }
 
-int highMinAge(struct student v[], int *minAge)
+void highMinAge(struct student v[], int *minAgePosition, int *highAgePosition)
 {
-    int highAge = 0;
-    *minAge = v[0].age;
+    int aux = 0;
+    int aux1 = v[0].age;
     for(int i=0;i<length;i++)
     {
-        if(v[i].age > highAge)
+        if(v[i].age > aux)
         {
-            highAge = v[i].age;
-            
+            aux = v[i].age;
+            *highAgePosition = i;
         }
-        if(v[i].age < *minAge)
+        if(v[i].age < aux1)
         {
-            *minAge = v[i].age;
+            aux1 = v[i].age;
+            *minAgePosition = i;
         }
     }
-    return highAge;
 }
 
 
 int main(void)
 {
     float imc[length];
-    float avarege = 0, minIMC; 
-    int minAge; 
+    float avarege = 0; 
+    int highHeightPosition, minIMCPosition, highImcPosition, highAgePosition, minAgePosition;
     struct student v[length];
+
     get_student(v);
+
     printStudent(v);
+
     calculateIMC(v, imc , &avarege);
-    for(int i=0;i<length;i++)
-    {
-        printf("%.3f\n", imc[i]);
-    }
-    printf("High IMC = %.3f \n" , highMinIMC(imc, &minIMC));
-    printf("Lower IMC= %.3f\n", minIMC);
-    printf("High Age = %d\n" , highMinAge(v, &minAge));
-    printf("Lower Age = %d\n", minAge);
-    printf("Avarege of IMC = %.3f\n" , avarege);
+    highHeight(v, &highHeightPosition);
+    highMinIMC(imc, &minIMCPosition, &highImcPosition);
+    highMinAge(v, &minAgePosition, &highAgePosition);
+
+    
+    //HigherHeight
+    printf("The student with higher height is %s\n", v[highHeightPosition].name);
+
+    //Higher IMC and Lower IMC 
+    printf("The student with higher IMC is %s ", v[highImcPosition].name);
+    printf("and the student with lower IMC is %s \n", v[minIMCPosition].name);
+
+    //Higher Age and Lower Age
+    printf("The student with higher Age is %s ", v[highAgePosition].name);
+    printf("and the student with lower Age is %s \n", v[minAgePosition].name);
+
+    //avarege IMC
+    printf("The avarege IMC of the student is %.2f\n", avarege);
+
     return 0;
 
 }
